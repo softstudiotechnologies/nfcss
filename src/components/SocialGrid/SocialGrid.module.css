@@ -1,0 +1,44 @@
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 cols for bigger icons */
+    gap: 1.5rem 1rem;
+    padding: 0 0 2rem;
+    width: 100%;
+}
+
+.itemWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.socialCard {
+    width: 64px;
+    height: 64px;
+    border: none;
+    border-radius: 18px;
+    /* Squircle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.socialCard:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.socialCard:active {
+    transform: scale(0.95);
+}
+
+.label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
