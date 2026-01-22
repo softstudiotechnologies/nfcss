@@ -1,33 +1,32 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-// Detect mobile devices
+// Detect mobile device
 const isMobileDevice = () =>
   /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const generatePDF = async (
   elementId,
-  fileName = 'digital-profile-a4.pdf'
+  fileName = 'digital-card.pdf'
 ) => {
-  // --------------------------------------------------
-  // MOBILE POPUP SAFETY
-  // --------------------------------------------------
+  // -------------------------------
+  // MOBILE POPUP FIX
+  // -------------------------------
   let mobileWindow = null;
   if (isMobileDevice()) {
     mobileWindow = window.open('', '_blank');
     if (!mobileWindow) {
-      alert('Please allow popups to generate PDF.');
+      alert('Please allow popups to generate the PDF.');
       return;
     }
-
     mobileWindow.document.write(`
       <html>
         <body style="
+          margin:0;
           background:#ffffff;
-          color:#000;
           display:flex;
-          justify-content:center;
           align-items:center;
+          justify-content:center;
           height:100vh;
           font-family:sans-serif;
         ">
@@ -40,81 +39,93 @@ export const generatePDF = async (
   const originalElement = document.getElementById(elementId);
   if (!originalElement) {
     if (mobileWindow) mobileWindow.close();
+    console.error('Element not found');
     return;
   }
 
   try {
-    // --------------------------------------------------
+    // -------------------------------
     // CLONE ELEMENT
-    // --------------------------------------------------
+    // -------------------------------
     const clone = originalElement.cloneNode(true);
     const container = document.createElement('div');
 
     container.style.position = 'absolute';
-    container.style.top = '-9999px';
     container.style.left = '0';
+    container.style.top = '-9999px';
     container.style.width = '100%';
-    container.style.zIndex = '-9999';
+    container.style.zIndex = '-1';
 
     document.body.appendChild(container);
     container.appendChild(clone);
 
-    // Force full rendering
-    clone.style.width = '100%';
-    clone.style.minHeight = '100vh';
-    clone.style.height = 'auto';
-    clone.style.overflow = 'visible';
-
-    // Remove non-PDF UI
+    // -------------------------------
+    // REMOVE NON-PDF ELEMENTS
+    // -------------------------------
     clone
       .querySelectorAll('[data-pdf-ignore="true"]')
       .forEach(el => el.remove());
 
-    // --------------------------------------------------
-    // EXTRA LARGE PROFILE IMAGE
-    // --------------------------------------------------
-    const profileImg =
-      clone.querySelector('.profile-image') ||
-      clone.querySelector('[class*="avatar"] img') ||
-      clone.querySelector('[class*="profile"] img');
+    // -------------------------------
+    // FORCE A4 RATIO (CRITICAL FIX)
+    // -------------------------------
+    const A4_RATIO = 210 / 297; // width / height
 
-    if (profileImg) {
-      profileImg.style.width = '280px';
-      profileImg.style.height = '280px';
-      profileImg.style.maxWidth = '280px';
-      profileImg.style.maxHeight = '280px';
-      profileImg.style.borderRadius = '50%';
-      profileImg.style.objectFit = 'cover';
-      profileImg.style.display = 'block';
-      profileImg.style.margin = '40px auto 32px auto';
+    const forcedWidth = clone.offsetWidth;
+    const forcedHeight = forcedWidth / A4_RATIO;
+
+    clone.style.width = `${forcedWidth}px`;
+    clone.style.height = `${forcedHeight}px`;
+    clone.style.minHeight = `${forcedHeight}px`;
+    clone.style.maxHeight = `${forcedHeight}px`;
+    clone.style.overflow = 'hidden';
+
+    // -------------------------------
+    // BACKGROUND COLOR (NO BLACK)
+    // -------------------------------
+    const bgColor =
+      window.getComputedStyle(originalElement).backgroundColor || '#ffffff';
+
+    clone.style.background = bgColor;
+
+    // -------------------------------
+    // CENTER CONTENT
+    // -------------------------------
+    clone.style.display = 'flex';
+    clone.style.alignItems = 'center';
+    clone.style.justifyContent = 'center';
+
+    // -------------------------------
+    // PROFILE PIC → EXTRA LARGE
+    // -------------------------------
+    const profilePic = clone.querySelector('img');
+    if (profilePic) {
+      profilePic.style.width = '180px';
+      profilePic.style.height = '180px';
+      profilePic.style.borderRadius = '50%';
+      profilePic.style.objectFit = 'cover';
     }
 
-    // Ensure background color fills page
-    const cardContainer =
-      clone.querySelector('#card-container') || clone;
+    // -------------------------------
+    // WAIT FOR LAYOUT
+    // -------------------------------
+    await new Promise(r => setTimeout(r, 500));
 
-    cardContainer.style.minHeight = '100vh';
-    cardContainer.style.height = 'auto';
-    cardContainer.style.boxShadow = 'none';
-    cardContainer.style.borderRadius = '0';
-
-    await new Promise(res => setTimeout(res, 500));
-
-    // --------------------------------------------------
-    // CAPTURE CANVAS (NO BLACK BACKGROUND)
-    // --------------------------------------------------
+    // -------------------------------
+    // CAPTURE CANVAS (PNG ONLY)
+    // -------------------------------
     const canvas = await html2canvas(clone, {
       scale: 4,
       useCORS: true,
-      backgroundColor: null, // 🔥 IMPORTANT
+      backgroundColor: bgColor,
       logging: false,
     });
 
-    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+    const imgData = canvas.toDataURL('image/png');
 
-    // --------------------------------------------------
+    // -------------------------------
     // EXTRACT LINKS
-    // --------------------------------------------------
+    // -------------------------------
     const linkData = [];
     const cloneRect = clone.getBoundingClientRect();
 
@@ -131,71 +142,46 @@ export const generatePDF = async (
 
     document.body.removeChild(container);
 
-    // --------------------------------------------------
-    // CREATE FULL A4 PDF
-    // --------------------------------------------------
+    // -------------------------------
+    // CREATE PDF (FULL A4 FILL)
+    // -------------------------------
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
       format: 'a4',
     });
 
-    const pdfWidth = 210;
-    const pdfHeight = 297;
+    // FULL PAGE IMAGE (NO MARGINS, NO BLACK)
+    pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
 
-    const imgProps = pdf.getImageProperties(imgData);
-    const imgRatio = imgProps.width / imgProps.height;
-    const pageRatio = pdfWidth / pdfHeight;
-
-    let renderWidth, renderHeight, xOffset, yOffset;
-
-    // COVER MODE → FULL PAGE
-    if (imgRatio > pageRatio) {
-      renderHeight = pdfHeight;
-      renderWidth = renderHeight * imgRatio;
-      xOffset = (pdfWidth - renderWidth) / 2;
-      yOffset = 0;
-    } else {
-      renderWidth = pdfWidth;
-      renderHeight = renderWidth / imgRatio;
-      xOffset = 0;
-      yOffset = (pdfHeight - renderHeight) / 2;
-    }
-
-    pdf.addImage(
-      imgData,
-      'JPEG',
-      xOffset,
-      yOffset,
-      renderWidth,
-      renderHeight
-    );
-
-    // --------------------------------------------------
-    // CLICKABLE LINKS
-    // --------------------------------------------------
+    // -------------------------------
+    // APPLY LINKS
+    // -------------------------------
     linkData.forEach(link => {
-      const x = link.xRatio * renderWidth + xOffset;
-      const y = link.yRatio * renderHeight + yOffset;
-      const w = link.wRatio * renderWidth;
-      const h = link.hRatio * renderHeight;
-
-      if (Number.isFinite(x + y + w + h)) {
-        pdf.link(x, y, w, h, { url: link.url });
-      }
+      pdf.link(
+        link.xRatio * 210,
+        link.yRatio * 297,
+        link.wRatio * 210,
+        link.hRatio * 297,
+        { url: link.url }
+      );
     });
 
-    // --------------------------------------------------
+    // -------------------------------
     // SAVE / OPEN
-    // --------------------------------------------------
+    // -------------------------------
     if (mobileWindow) {
       const blob = pdf.output('blob');
-      mobileWindow.location.href = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
+      mobileWindow.location.href = url;
     } else {
       pdf.save(fileName);
     }
   } catch (err) {
-    console.error('PDF generation failed', err);
-    if (mobileWindow) mobileWindow.close();
+    console.error(err);
+    if (mobileWindow) {
+      mobileWindow.close();
+      alert('Failed to generate PDF');
+    }
   }
 };
