@@ -64,7 +64,8 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
         // And content is centered.
         // Identify the card container in the clone
         const cardContainer = clone.querySelector('#card-container') || clone;
-        cardContainer.style.background = '#ffffff'; // Ensure white background
+        cardContainer.style.background = '#000000'; // Make Background Black
+        cardContainer.style.color = '#ffffff'; // Ensure text is white
         cardContainer.style.backgroundImage = 'none';
         cardContainer.style.minHeight = 'auto'; // Shrink to fit content
         cardContainer.style.height = 'auto';
@@ -100,7 +101,7 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
         const canvas = await html2canvas(clone, {
             scale: 4, // Higher scale for better print quality on small card size
             useCORS: true,
-            backgroundColor: '#ffffff',
+            backgroundColor: '#000000', // Capture with Black Background
             logging: false,
             windowWidth: document.documentElement.offsetWidth,
         });
