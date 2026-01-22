@@ -1,15 +1,18 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
+// Detect mobile devices
 const isMobileDevice = () =>
   /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const generatePDF = async (
   elementId,
-  fileName = 'digital-card-a4.pdf'
+  fileName = 'digital-profile-a4.pdf'
 ) => {
+  // --------------------------------------------------
+  // MOBILE POPUP SAFETY (MUST be before await)
+  // --------------------------------------------------
   let mobileWindow = null;
-
   if (isMobileDevice()) {
     mobileWindow = window.open('', '_blank');
     if (!mobileWindow) {
@@ -28,7 +31,7 @@ export const generatePDF = async (
           height:100vh;
           font-family:sans-serif;
         ">
-          <h3>Generating PDF...</h3>
+          <h3>Generating PDF…</h3>
         </body>
       </html>
     `);
@@ -42,7 +45,7 @@ export const generatePDF = async (
 
   try {
     // --------------------------------------------------
-    // CLONE ELEMENT
+    // CLONE ELEMENT FOR PDF
     // --------------------------------------------------
     const clone = originalElement.cloneNode(true);
     const container = document.createElement('div');
@@ -51,6 +54,7 @@ export const generatePDF = async (
     container.style.top = '-9999px';
     container.style.left = '0';
     container.style.width = '100%';
+    container.style.zIndex = '-9999';
 
     document.body.appendChild(container);
     container.appendChild(clone);
@@ -59,15 +63,39 @@ export const generatePDF = async (
     clone.style.height = 'auto';
     clone.style.overflow = 'visible';
 
-    // Remove unwanted elements
+    // Remove non-PDF UI
     clone
       .querySelectorAll('[data-pdf-ignore="true"]')
       .forEach(el => el.remove());
 
+    // --------------------------------------------------
+    // FORCE EXTRA-LARGE PROFILE IMAGE
+    // --------------------------------------------------
+    const profileImg =
+      clone.querySelector('.profile-image') ||
+      clone.querySelector('[class*="avatar"] img') ||
+      clone.querySelector('[class*="profile"] img');
+
+    if (profileImg) {
+      profileImg.style.width = '280px';     // 🔥 EXTRA LARGE
+      profileImg.style.height = '280px';
+      profileImg.style.maxWidth = '280px';
+      profileImg.style.maxHeight = '280px';
+
+      profileImg.style.borderRadius = '50%';
+      profileImg.style.objectFit = 'cover';
+      profileImg.style.display = 'block';
+      profileImg.style.margin = '40px auto 32px auto';
+
+      profileImg.style.border =
+        '4px solid rgba(255,255,255,0.2)';
+    }
+
+    // Let layout settle
     await new Promise(res => setTimeout(res, 500));
 
     // --------------------------------------------------
-    // CAPTURE FULL PAGE
+    // CAPTURE CANVAS (HIGH QUALITY)
     // --------------------------------------------------
     const canvas = await html2canvas(clone, {
       scale: 4,
@@ -98,7 +126,7 @@ export const generatePDF = async (
     document.body.removeChild(container);
 
     // --------------------------------------------------
-    // CREATE A4 PDF (FULL BLEED)
+    // CREATE FULL A4 PDF
     // --------------------------------------------------
     const pdf = new jsPDF({
       orientation: 'portrait',
@@ -115,15 +143,13 @@ export const generatePDF = async (
 
     let renderWidth, renderHeight, xOffset, yOffset;
 
-    // 🔥 COVER logic (fills entire page)
+    // COVER logic → full page
     if (imgRatio > pageRatio) {
-      // Image is wider → fit height
       renderHeight = pdfHeight;
       renderWidth = renderHeight * imgRatio;
       xOffset = (pdfWidth - renderWidth) / 2;
       yOffset = 0;
     } else {
-      // Image is taller → fit width
       renderWidth = pdfWidth;
       renderHeight = renderWidth / imgRatio;
       xOffset = 0;
@@ -140,7 +166,7 @@ export const generatePDF = async (
     );
 
     // --------------------------------------------------
-    // ADD CLICKABLE LINKS (FULL PAGE)
+    // ADD CLICKABLE LINKS
     // --------------------------------------------------
     linkData.forEach(link => {
       const x = link.xRatio * renderWidth + xOffset;
@@ -154,16 +180,17 @@ export const generatePDF = async (
     });
 
     // --------------------------------------------------
-    // SAVE / OPEN
+    // SAVE / OPEN PDF
     // --------------------------------------------------
     if (mobileWindow) {
       const blob = pdf.output('blob');
-      mobileWindow.location.href = URL.createObjectURL(blob);
+      mobileWindow.location.href =
+        URL.createObjectURL(blob);
     } else {
       pdf.save(fileName);
     }
   } catch (err) {
-    console.error(err);
+    console.error('PDF generation failed', err);
     if (mobileWindow) mobileWindow.close();
   }
 };
