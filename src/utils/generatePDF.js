@@ -10,7 +10,7 @@ export const generatePDF = async (
   fileName = 'digital-profile-a4.pdf'
 ) => {
   // --------------------------------------------------
-  // MOBILE POPUP SAFETY (MUST be before await)
+  // MOBILE POPUP SAFETY
   // --------------------------------------------------
   let mobileWindow = null;
   if (isMobileDevice()) {
@@ -23,8 +23,8 @@ export const generatePDF = async (
     mobileWindow.document.write(`
       <html>
         <body style="
-          background:#000;
-          color:white;
+          background:#ffffff;
+          color:#000;
           display:flex;
           justify-content:center;
           align-items:center;
@@ -45,7 +45,7 @@ export const generatePDF = async (
 
   try {
     // --------------------------------------------------
-    // CLONE ELEMENT FOR PDF
+    // CLONE ELEMENT
     // --------------------------------------------------
     const clone = originalElement.cloneNode(true);
     const container = document.createElement('div');
@@ -59,7 +59,9 @@ export const generatePDF = async (
     document.body.appendChild(container);
     container.appendChild(clone);
 
+    // Force full rendering
     clone.style.width = '100%';
+    clone.style.minHeight = '100vh';
     clone.style.height = 'auto';
     clone.style.overflow = 'visible';
 
@@ -69,7 +71,7 @@ export const generatePDF = async (
       .forEach(el => el.remove());
 
     // --------------------------------------------------
-    // FORCE EXTRA-LARGE PROFILE IMAGE
+    // EXTRA LARGE PROFILE IMAGE
     // --------------------------------------------------
     const profileImg =
       clone.querySelector('.profile-image') ||
@@ -77,30 +79,34 @@ export const generatePDF = async (
       clone.querySelector('[class*="profile"] img');
 
     if (profileImg) {
-      profileImg.style.width = '280px';     // 🔥 EXTRA LARGE
+      profileImg.style.width = '280px';
       profileImg.style.height = '280px';
       profileImg.style.maxWidth = '280px';
       profileImg.style.maxHeight = '280px';
-
       profileImg.style.borderRadius = '50%';
       profileImg.style.objectFit = 'cover';
       profileImg.style.display = 'block';
       profileImg.style.margin = '40px auto 32px auto';
-
-      profileImg.style.border =
-        '4px solid rgba(255,255,255,0.2)';
     }
 
-    // Let layout settle
+    // Ensure background color fills page
+    const cardContainer =
+      clone.querySelector('#card-container') || clone;
+
+    cardContainer.style.minHeight = '100vh';
+    cardContainer.style.height = 'auto';
+    cardContainer.style.boxShadow = 'none';
+    cardContainer.style.borderRadius = '0';
+
     await new Promise(res => setTimeout(res, 500));
 
     // --------------------------------------------------
-    // CAPTURE CANVAS (HIGH QUALITY)
+    // CAPTURE CANVAS (NO BLACK BACKGROUND)
     // --------------------------------------------------
     const canvas = await html2canvas(clone, {
       scale: 4,
       useCORS: true,
-      backgroundColor: '#000000',
+      backgroundColor: null, // 🔥 IMPORTANT
       logging: false,
     });
 
@@ -143,7 +149,7 @@ export const generatePDF = async (
 
     let renderWidth, renderHeight, xOffset, yOffset;
 
-    // COVER logic → full page
+    // COVER MODE → FULL PAGE
     if (imgRatio > pageRatio) {
       renderHeight = pdfHeight;
       renderWidth = renderHeight * imgRatio;
@@ -166,7 +172,7 @@ export const generatePDF = async (
     );
 
     // --------------------------------------------------
-    // ADD CLICKABLE LINKS
+    // CLICKABLE LINKS
     // --------------------------------------------------
     linkData.forEach(link => {
       const x = link.xRatio * renderWidth + xOffset;
@@ -180,12 +186,11 @@ export const generatePDF = async (
     });
 
     // --------------------------------------------------
-    // SAVE / OPEN PDF
+    // SAVE / OPEN
     // --------------------------------------------------
     if (mobileWindow) {
       const blob = pdf.output('blob');
-      mobileWindow.location.href =
-        URL.createObjectURL(blob);
+      mobileWindow.location.href = URL.createObjectURL(blob);
     } else {
       pdf.save(fileName);
     }
