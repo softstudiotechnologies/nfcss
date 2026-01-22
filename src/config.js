@@ -1,5 +1,5 @@
 import { Share2, Instagram, Linkedin, Twitter, Globe, Mail, Phone, MessageCircle } from 'lucide-react';
-import { FaWhatsapp, FaTelegram, FaDiscord, FaMedium, FaFacebook, FaFacebookF } from 'react-icons/fa';
+import { FaWhatsapp, FaTelegram, FaDiscord, FaMedium, FaFacebook, FaFacebookF, FaMobile } from 'react-icons/fa';
 
 export const config = {
   // Brand & Profile Configuration
@@ -81,8 +81,8 @@ export const config = {
     },
     {
       id: "discord",
-      icon: FaDiscord,
-      url: "https://discord.gg/alex",
+      icon: FaMobile,
+      url: "+91 8086630149",
       enabled: true,
       color: "#5865F2"
     }
