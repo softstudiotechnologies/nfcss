@@ -45,12 +45,44 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
         container.appendChild(clone);
 
         // Force full visibility on clone and its scrollable children
+        // Force full visibility on clone
         clone.style.height = 'auto';
         clone.style.minHeight = 'auto';
         clone.style.maxHeight = 'none';
         clone.style.overflow = 'visible';
         clone.style.width = '100%';
 
+        // -----------------------------------------------------------------------
+        // 1.5 CLEANUP FOR ATM CARD LOOK
+        // -----------------------------------------------------------------------
+        // Remove elements tagged with data-pdf-ignore (Banner, Buttons)
+        const ignoredElements = clone.querySelectorAll('[data-pdf-ignore="true"]');
+        ignoredElements.forEach(el => el.remove());
+
+        // Adjust styles for the "Clean Card" look
+        // We want to ensure the background is white/clean since cover is gone
+        // And content is centered.
+        // Identify the card container in the clone
+        const cardContainer = clone.querySelector('#card-container') || clone;
+        cardContainer.style.background = '#ffffff'; // Ensure white background
+        cardContainer.style.backgroundImage = 'none';
+        cardContainer.style.minHeight = 'auto'; // Shrink to fit content
+        cardContainer.style.height = 'auto';
+        cardContainer.style.boxShadow = 'none';
+        cardContainer.style.borderRadius = '0';
+
+        // Add specific padding/centering for the ATM look
+        const contentContainer = cardContainer.querySelector('[class*="floatingCard"]');
+        if (contentContainer) {
+            contentContainer.style.background = 'transparent';
+            contentContainer.style.boxShadow = 'none';
+            contentContainer.style.border = 'none';
+            contentContainer.style.backdropFilter = 'none';
+            contentContainer.style.margin = '0';
+            contentContainer.style.width = '100%';
+        }
+
+        // Force full visibility on scrollable children
         const scrollables = clone.querySelectorAll('[class*="scrollableContent"], [class*="phoneFrame"]');
         scrollables.forEach(el => {
             el.style.height = 'auto';
@@ -81,10 +113,6 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
             type = 'PNG';
         }
 
-        const imgWidth = canvas.width;
-        const imgHeight = canvas.height;
-        const aspectRatio = imgWidth / imgHeight;
-
         // -----------------------------------------------------------------------
         // 3. EXTRACT LINKS (While clone exists)
         // -----------------------------------------------------------------------
@@ -111,39 +139,63 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
         document.body.removeChild(container);
 
         // -----------------------------------------------------------------------
-        // 4. GENERATE PDF (Standard Visiting Card Size)
+        // 4. GENERATE PDF (ATM Card Size: CR-80)
         // -----------------------------------------------------------------------
-        // Standard Vertical Visiting Card: ~2 inches wide (50.8mm)
-        // We let height adjust by aspect ratio to avoid distortion, 
-        // but it will be close to standard 3.5 inches (88.9mm) if aspect ratio is ~9:16.
-        const pdfWidth = 50.8;
-        const pdfHeight = pdfWidth / aspectRatio;
+        // CR-80 dimensions: 85.60 × 53.98 mm
+        // We use Portrait: 53.98mm width, 85.60mm height
+        const pdfWidth = 53.98;
+        const pdfHeight = 85.60;
 
-        if (!Number.isFinite(pdfWidth) || !Number.isFinite(pdfHeight) || pdfWidth <= 0 || pdfHeight <= 0) {
-            console.error("Invalid PDF dimensions generated:", { pdfWidth, pdfHeight, imgWidth, imgHeight, aspectRatio });
-            if (mobileWindow) mobileWindow.close();
-            return;
-        }
+        // We want to FIT the captured image into this size.
+        // We will scale the image to fit strictly within width, and center vertically if short,
+        // or just stretch to fill if the aspect ratio is close.
+        // For a digital card reflow, stretching might distort. 
+        // We will "Fill Width" and let height flow, but cutoff or background fill?
+        // Actually, we captured exactly the content we wanted (removed banner).
+        // Let's rely on the capture.
 
+        // IMPORTANT: We force the PDF format to ATM size
         const pdf = new jsPDF({
-            orientation: pdfHeight > pdfWidth ? 'portrait' : 'landscape',
+            orientation: 'portrait',
             unit: 'mm',
             format: [pdfWidth, pdfHeight],
         });
 
+        // Calculate image placement to preserve aspect ratio?
+        // Or just stretch? ATM card implies specific background filling.
+        // We will fill the width (53.98mm) and calculate proportional height.
+        // If it's less than 85.6, we leave white space or center.
+        // If it's more, we scale down?
+        // Ideally, the content flows to fill.
+
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgRatio = imgProps.width / imgProps.height;
+
+        // Render Width is fixed:
+        const renderWidth = pdfWidth;
+        const renderHeight = renderWidth / imgRatio;
+
+        // Center vertically if smaller than card height
+        let yOffset = 0;
+        if (renderHeight < pdfHeight) {
+            yOffset = (pdfHeight - renderHeight) / 2;
+        }
+
         // Add Image
-        pdf.addImage(imgData, type, 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(imgData, type, 0, yOffset, renderWidth, renderHeight);
 
         // Add Links
         linkData.forEach(link => {
-            const x = link.xRatio * pdfWidth;
-            const y = link.yRatio * pdfHeight;
-            const w = link.wRatio * pdfWidth;
-            const h = link.hRatio * pdfHeight;
+            const x = link.xRatio * renderWidth;
+            const y = (link.yRatio * renderHeight) + yOffset;
+            const w = link.wRatio * renderWidth;
+            const h = link.hRatio * renderHeight;
 
             // Ensure values are valid finite numbers before adding link
             if (Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(w) && Number.isFinite(h)) {
-                pdf.link(x, y, w, h, { url: link.url });
+                try {
+                    pdf.link(x, y, w, h, { url: link.url });
+                } catch (e) {/*Ignore link errors*/ }
             } else {
                 console.warn("Skipping link with invalid coordinates:", { x, y, w, h, url: link.url });
             }

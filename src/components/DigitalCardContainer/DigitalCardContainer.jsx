@@ -17,6 +17,7 @@ const DigitalCardContainer = ({ children }) => {
                 <div
                     className={styles.coverImage}
                     style={{ backgroundImage: `url(${config.profile.coverImage})` }}
+                    data-pdf-ignore="true"
                 />
 
                 {/* Floating Card Content */}

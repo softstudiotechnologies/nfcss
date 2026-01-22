@@ -53,7 +53,7 @@ const ActionButtons = () => {
     };
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} data-pdf-ignore="true">
             {/* Row 1: Circular Action Icons */}
             <div className={styles.secondaryActions}>
                 {actions.phone.enabled && (
