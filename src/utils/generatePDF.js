@@ -46,8 +46,11 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
         // -----------------------------------------------------------------------
         // 2. CAPTURE VISUALS
         // -----------------------------------------------------------------------
+        // -----------------------------------------------------------------------
+        // 2. CAPTURE VISUALS
+        // -----------------------------------------------------------------------
         const canvas = await html2canvas(clone, {
-            scale: 2,
+            scale: 4, // Higher scale for better print quality on small card size
             useCORS: true,
             backgroundColor: '#ffffff',
             logging: false,
@@ -92,9 +95,12 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
         document.body.removeChild(container);
 
         // -----------------------------------------------------------------------
-        // 4. GENERATE PDF
+        // 4. GENERATE PDF (Standard Visiting Card Size)
         // -----------------------------------------------------------------------
-        const pdfWidth = 210; // A4 Width in mm
+        // Standard Vertical Visiting Card: ~2 inches wide (50.8mm)
+        // We let height adjust by aspect ratio to avoid distortion, 
+        // but it will be close to standard 3.5 inches (88.9mm) if aspect ratio is ~9:16.
+        const pdfWidth = 50.8;
         const pdfHeight = pdfWidth / aspectRatio;
 
         if (!Number.isFinite(pdfWidth) || !Number.isFinite(pdfHeight) || pdfWidth <= 0 || pdfHeight <= 0) {

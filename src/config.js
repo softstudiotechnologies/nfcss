@@ -33,7 +33,7 @@ export const config = {
     },
     phone: {
       enabled: true,
-      value: "+1 (555) 123-4567",
+      value: "+91 8086630149",
     },
     website: {
       enabled: true,
