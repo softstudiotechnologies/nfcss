@@ -132,7 +132,25 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
             }
         });
 
-        pdf.save(fileName);
+        // 5. SAVE / DOWNLOAD PDF
+        // -----------------------------------------------------------------------
+        // Mobile Handling: Attempt to save, if fails or logic suggests, open in new tab
+        try {
+            // Standard save for desktop
+            pdf.save(fileName);
+        } catch (e) {
+            console.warn("Save failed, attempting fallback...", e);
+        }
+
+        // Additional Mobile Fallback: Open Blob in new tab allows 'Share'/'Save to Files' on iOS
+        // We do this if we suspect we are on a mobile device or if the user needs a backup
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            const blob = pdf.output('blob');
+            const blobUrl = URL.createObjectURL(blob);
+            window.open(blobUrl, '_blank');
+        }
 
     } catch (error) {
         console.error("Error generating PDF:", error);
