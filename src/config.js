@@ -1,5 +1,5 @@
 import { Share2, Instagram, Linkedin, Twitter, Globe, Mail, Phone, MessageCircle } from 'lucide-react';
-import { FaWhatsapp, FaTelegram, FaDiscord, FaMedium, FaFacebook, FaFacebookF, FaMobile } from 'react-icons/fa';
+import { FaWhatsapp, FaTelegram, FaDiscord, FaMedium, FaFacebook, FaFacebookF, FaMobile, FaPhone } from 'react-icons/fa';
 
 export const config = {
   // Brand & Profile Configuration
