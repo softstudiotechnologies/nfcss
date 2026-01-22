@@ -1,7 +1,7 @@
 import { Phone, Mail, Link, Download, FileDown } from 'lucide-react';
 import { config } from '../../config';
 import styles from './ActionButtons.module.css';
-import { generatePDF } from '../../utils/generatePDF';
+import visitingCardImage from '../../assets/BLG.jpg';
 
 const ActionButtons = () => {
     const { actions } = config;
@@ -36,10 +36,13 @@ const ActionButtons = () => {
         window.URL.revokeObjectURL(url);
     };
 
-    const handleDownloadPDF = () => {
-        // Use the ID we added to DigitalCardContainer
-        const fileName = `${config.profile.name.replace(/\s+/g, '_')}_Card.pdf`;
-        generatePDF('card-container', fileName);
+    const handleDownloadImage = () => {
+        const link = document.createElement('a');
+        link.href = visitingCardImage;
+        link.setAttribute('download', `${config.profile.name.replace(/\s+/g, '_')}_Visiting_Card.jpg`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     const handleAction = (type, value) => {
@@ -103,7 +106,7 @@ const ActionButtons = () => {
 
                 <button
                     className={styles.secondaryButton}
-                    onClick={handleDownloadPDF}
+                    onClick={handleDownloadImage}
                     title="Download Visiting Card"
                 >
                     <span>Save Visiting Card</span>
