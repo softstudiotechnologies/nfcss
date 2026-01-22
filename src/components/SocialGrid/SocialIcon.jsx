@@ -1,24 +1,25 @@
 import styles from './SocialGrid.module.css';
 
 const SocialIcon = ({ Icon, url, color, id }) => {
-    const handleClick = () => {
-        window.open(url, '_blank', 'noopener,noreferrer');
-    };
-
     // Capitalize first letter for label
     const label = id.charAt(0).toUpperCase() + id.slice(1);
 
+    // Determine if it's a protocol link (tel, mailto) vs a website
+    const isProtocol = url.startsWith('tel:') || url.startsWith('mailto:');
+
     return (
         <div className={styles.itemWrapper}>
-            <button
+            <a
+                href={url}
                 className={styles.socialCard}
-                onClick={handleClick}
-                style={{ backgroundColor: color }} // Use branded color for background
+                style={{ backgroundColor: color }}
                 aria-label={`Visit ${id}`}
+                target={isProtocol ? undefined : "_blank"}
+                rel={isProtocol ? undefined : "noopener noreferrer"}
                 data-pdf-url={url}
             >
                 <Icon size={28} color="white" />
-            </button>
+            </a>
             <span className={styles.label}>{label}</span>
         </div>
     );
