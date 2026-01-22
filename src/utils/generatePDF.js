@@ -1,10 +1,29 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
+// Helper to detect mobile
+const isMobileDevice = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
+    // 1. POPUP BLOCKER FIX: Open window immediately if mobile
+    // We must do this BEFORE any await keyword to maintain the 'user gesture'
+    let mobileWindow = null;
+    if (isMobileDevice()) {
+        mobileWindow = window.open('', '_blank');
+        if (mobileWindow) {
+            mobileWindow.document.write('<html><body style="background:#0f172a;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;text-align:center;"><h3>Generating PDF...</h3><p>Please wait a moment.</p></body></html>');
+        } else {
+            // If null, the blocker prevented it even with direct click (unlikely but possible in some in-app browsers)
+            console.warn("Popup blocked");
+            alert("Please allow popups to save the card, or open this page in Chrome/Safari.");
+            return;
+        }
+    }
+
     const originalElement = document.getElementById(elementId);
     if (!originalElement) {
         console.error(`Element with id ${elementId} not found`);
+        if (mobileWindow) mobileWindow.close();
         return;
     }
 
@@ -43,9 +62,6 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
         // Wait for layout stability
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // -----------------------------------------------------------------------
-        // 2. CAPTURE VISUALS
-        // -----------------------------------------------------------------------
         // -----------------------------------------------------------------------
         // 2. CAPTURE VISUALS
         // -----------------------------------------------------------------------
@@ -105,6 +121,7 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
 
         if (!Number.isFinite(pdfWidth) || !Number.isFinite(pdfHeight) || pdfWidth <= 0 || pdfHeight <= 0) {
             console.error("Invalid PDF dimensions generated:", { pdfWidth, pdfHeight, imgWidth, imgHeight, aspectRatio });
+            if (mobileWindow) mobileWindow.close();
             return;
         }
 
@@ -134,25 +151,26 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
 
         // 5. SAVE / DOWNLOAD PDF
         // -----------------------------------------------------------------------
-        // Mobile Handling: Attempt to save, if fails or logic suggests, open in new tab
-        try {
-            // Standard save for desktop
-            pdf.save(fileName);
-        } catch (e) {
-            console.warn("Save failed, attempting fallback...", e);
-        }
 
-        // Additional Mobile Fallback: Open Blob in new tab allows 'Share'/'Save to Files' on iOS
-        // We do this if we suspect we are on a mobile device or if the user needs a backup
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        if (isMobile) {
+        if (mobileWindow) {
+            // Finish Mobile Flow: Inject PDF into the pre-opened window
             const blob = pdf.output('blob');
             const blobUrl = URL.createObjectURL(blob);
-            window.open(blobUrl, '_blank');
+            mobileWindow.location.href = blobUrl;
+        } else {
+            // Desktop Flow: Standard save
+            try {
+                pdf.save(fileName);
+            } catch (e) {
+                console.warn("Save failed in desktop mode", e);
+            }
         }
 
     } catch (error) {
         console.error("Error generating PDF:", error);
+        if (mobileWindow) {
+            mobileWindow.close();
+            alert("Error generating PDF. Please try again.");
+        }
     }
 };
