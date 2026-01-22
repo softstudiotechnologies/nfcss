@@ -5,7 +5,7 @@ export const config = {
   // Brand & Profile Configuration
   profile: {
     name: "Muhammed Favas",
-    role: "Software Developerrr",
+    role: "Software Developer",
     image: "/favas.JPG", // Avatar
     coverImage: "BLG.JPG", // Premium Cover
     verified: true,
