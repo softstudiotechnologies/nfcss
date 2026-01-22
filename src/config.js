@@ -45,13 +45,6 @@ export const config = {
   // Social Links
   socials: [
     {
-      id: "call",
-      icon: Phone,
-      url: "tel:+91 8086630149",
-      enabled: true,
-      color: "#3B82F6" // Modern Blue
-    },
-    {
       id: "whatsapp",
       icon: FaWhatsapp,
       url: "https://wa.me/15551234567",
