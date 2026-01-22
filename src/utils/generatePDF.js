@@ -1,7 +1,6 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-// Detect mobile device
 const isMobileDevice = () =>
   /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -9,24 +8,22 @@ export const generatePDF = async (
   elementId,
   fileName = 'digital-card.pdf'
 ) => {
-  // -------------------------------
-  // MOBILE POPUP FIX
-  // -------------------------------
   let mobileWindow = null;
+
   if (isMobileDevice()) {
     mobileWindow = window.open('', '_blank');
     if (!mobileWindow) {
-      alert('Please allow popups to generate the PDF.');
+      alert('Please allow popups to generate PDF');
       return;
     }
     mobileWindow.document.write(`
       <html>
         <body style="
           margin:0;
-          background:#ffffff;
+          background:#fff;
           display:flex;
-          align-items:center;
           justify-content:center;
+          align-items:center;
           height:100vh;
           font-family:sans-serif;
         ">
@@ -38,150 +35,120 @@ export const generatePDF = async (
 
   const originalElement = document.getElementById(elementId);
   if (!originalElement) {
-    if (mobileWindow) mobileWindow.close();
-    console.error('Element not found');
+    mobileWindow?.close();
     return;
   }
 
   try {
-    // -------------------------------
-    // CLONE ELEMENT
-    // -------------------------------
+    // Clone
     const clone = originalElement.cloneNode(true);
     const container = document.createElement('div');
 
     container.style.position = 'absolute';
-    container.style.left = '0';
     container.style.top = '-9999px';
     container.style.width = '100%';
-    container.style.zIndex = '-1';
-
     document.body.appendChild(container);
     container.appendChild(clone);
 
-    // -------------------------------
-    // REMOVE NON-PDF ELEMENTS
-    // -------------------------------
-    clone
-      .querySelectorAll('[data-pdf-ignore="true"]')
-      .forEach(el => el.remove());
+    // Remove unwanted elements
+    clone.querySelectorAll('[data-pdf-ignore="true"]').forEach(e => e.remove());
 
-    // -------------------------------
-    // FORCE A4 RATIO (CRITICAL FIX)
-    // -------------------------------
-    const A4_RATIO = 210 / 297; // width / height
+    // A4 aspect ratio
+    const A4_RATIO = 210 / 297;
+    const width = clone.offsetWidth;
+    const height = width / A4_RATIO;
 
-    const forcedWidth = clone.offsetWidth;
-    const forcedHeight = forcedWidth / A4_RATIO;
-
-    clone.style.width = `${forcedWidth}px`;
-    clone.style.height = `${forcedHeight}px`;
-    clone.style.minHeight = `${forcedHeight}px`;
-    clone.style.maxHeight = `${forcedHeight}px`;
-    clone.style.overflow = 'hidden';
-
-    // -------------------------------
-    // BACKGROUND COLOR (NO BLACK)
-    // -------------------------------
-    const bgColor =
-      window.getComputedStyle(originalElement).backgroundColor || '#ffffff';
-
-    clone.style.background = bgColor;
-
-    // -------------------------------
-    // CENTER CONTENT
-    // -------------------------------
+    clone.style.width = `${width}px`;
+    clone.style.height = `${height}px`;
     clone.style.display = 'flex';
+    clone.style.flexDirection = 'column';
     clone.style.alignItems = 'center';
     clone.style.justifyContent = 'center';
+    clone.style.overflow = 'hidden';
 
-    // -------------------------------
-    // PROFILE PIC → EXTRA LARGE
-    // -------------------------------
-    const profilePic = clone.querySelector('img');
-    if (profilePic) {
-      profilePic.style.width = '180px';
-      profilePic.style.height = '180px';
-      profilePic.style.borderRadius = '50%';
-      profilePic.style.objectFit = 'cover';
+    // Background
+    const bgColor =
+      window.getComputedStyle(originalElement).backgroundColor || '#ffffff';
+    clone.style.background = bgColor;
+
+    // Profile Image (Extra Large)
+    const img = clone.querySelector('img');
+    if (img) {
+      img.style.width = '180px';
+      img.style.height = '180px';
+      img.style.borderRadius = '50%';
+      img.style.objectFit = 'cover';
+      img.style.marginBottom = '16px';
     }
 
-    // -------------------------------
-    // WAIT FOR LAYOUT
-    // -------------------------------
-    await new Promise(r => setTimeout(r, 500));
+    // Name styling
+    const name = clone.querySelector('h1');
+    if (name) {
+      name.style.fontSize = '32px';
+      name.style.margin = '8px 0';
+    }
 
-    // -------------------------------
-    // CAPTURE CANVAS (PNG ONLY)
-    // -------------------------------
+    // Contact Number Styling
+    const phone = clone.querySelector('.phone');
+    if (phone) {
+      phone.style.fontSize = '20px';
+      phone.style.marginTop = '10px';
+      phone.style.fontWeight = '500';
+    }
+
+    await new Promise(r => setTimeout(r, 400));
+
+    // Canvas capture
     const canvas = await html2canvas(clone, {
       scale: 4,
-      useCORS: true,
       backgroundColor: bgColor,
-      logging: false,
+      useCORS: true,
     });
 
     const imgData = canvas.toDataURL('image/png');
 
-    // -------------------------------
-    // EXTRACT LINKS
-    // -------------------------------
-    const linkData = [];
-    const cloneRect = clone.getBoundingClientRect();
+    // Collect links
+    const links = [];
+    const rect = clone.getBoundingClientRect();
 
     clone.querySelectorAll('[data-pdf-url]').forEach(el => {
-      const rect = el.getBoundingClientRect();
-      linkData.push({
+      const r = el.getBoundingClientRect();
+      links.push({
         url: el.getAttribute('data-pdf-url'),
-        xRatio: (rect.left - cloneRect.left) / cloneRect.width,
-        yRatio: (rect.top - cloneRect.top) / cloneRect.height,
-        wRatio: rect.width / cloneRect.width,
-        hRatio: rect.height / cloneRect.height,
+        x: (r.left - rect.left) / rect.width,
+        y: (r.top - rect.top) / rect.height,
+        w: r.width / rect.width,
+        h: r.height / rect.height,
       });
     });
 
     document.body.removeChild(container);
 
-    // -------------------------------
-    // CREATE PDF (FULL A4 FILL)
-    // -------------------------------
+    // Create PDF
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
       format: 'a4',
     });
 
-    // FULL PAGE IMAGE (NO MARGINS, NO BLACK)
     pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
 
-    // -------------------------------
-    // APPLY LINKS
-    // -------------------------------
-    linkData.forEach(link => {
-      pdf.link(
-        link.xRatio * 210,
-        link.yRatio * 297,
-        link.wRatio * 210,
-        link.hRatio * 297,
-        { url: link.url }
-      );
+    // Add links (phone included)
+    links.forEach(l => {
+      pdf.link(l.x * 210, l.y * 297, l.w * 210, l.h * 297, {
+        url: l.url,
+      });
     });
 
-    // -------------------------------
-    // SAVE / OPEN
-    // -------------------------------
+    // Save / open
     if (mobileWindow) {
       const blob = pdf.output('blob');
-      const url = URL.createObjectURL(blob);
-      mobileWindow.location.href = url;
+      mobileWindow.location.href = URL.createObjectURL(blob);
     } else {
       pdf.save(fileName);
     }
-  } catch (err) {
-    console.error(err);
-    if (mobileWindow) {
-      mobileWindow.close();
-      alert('Failed to generate PDF');
-    }
+  } catch (e) {
+    console.error(e);
+    mobileWindow?.close();
   }
 };
