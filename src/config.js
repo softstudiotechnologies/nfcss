@@ -80,8 +80,8 @@ export const config = {
       color: "#000000"
     },
     {
-      id: "discord",
-      icon: FaMobile,
+      id: "Mobile",
+      icon: FaPhone,
       url: "+91 8086630149",
       enabled: true,
       color: "#5865F2"
