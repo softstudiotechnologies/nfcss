@@ -47,7 +47,7 @@ export const config = {
     {
       id: "call",
       icon: Phone,
-      url: `tel:${config.actions.phone.value}`,
+      url: "tel:+91 8086630149",
       enabled: true,
       color: "#3B82F6" // Modern Blue
     },
