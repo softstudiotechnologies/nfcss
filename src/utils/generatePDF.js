@@ -152,6 +152,10 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
             format: 'a4',
         });
 
+        // 1. Fill entire page with Black
+        pdf.setFillColor(0, 0, 0);
+        pdf.rect(0, 0, pdfWidth, pdfHeight, 'F');
+
         const imgProps = pdf.getImageProperties(imgData);
         const imgRatio = imgProps.width / imgProps.height;
         const pageRatio = pdfWidth / pdfHeight;
