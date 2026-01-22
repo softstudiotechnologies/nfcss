@@ -13,7 +13,7 @@ export const generatePDF = async (
   if (isMobileDevice()) {
     mobileWindow = window.open('', '_blank');
     if (!mobileWindow) {
-      alert('Please allow popups to generate PDF');
+      alert('Please allow popups');
       return;
     }
     mobileWindow.document.write(`
@@ -40,7 +40,9 @@ export const generatePDF = async (
   }
 
   try {
-    // Clone
+    // --------------------------------
+    // CLONE
+    // --------------------------------
     const clone = originalElement.cloneNode(true);
     const container = document.createElement('div');
 
@@ -50,10 +52,11 @@ export const generatePDF = async (
     document.body.appendChild(container);
     container.appendChild(clone);
 
-    // Remove unwanted elements
     clone.querySelectorAll('[data-pdf-ignore="true"]').forEach(e => e.remove());
 
-    // A4 aspect ratio
+    // --------------------------------
+    // FORCE A4 RATIO
+    // --------------------------------
     const A4_RATIO = 210 / 297;
     const width = clone.offsetWidth;
     const height = width / A4_RATIO;
@@ -66,48 +69,38 @@ export const generatePDF = async (
     clone.style.justifyContent = 'center';
     clone.style.overflow = 'hidden';
 
-    // Background
     const bgColor =
       window.getComputedStyle(originalElement).backgroundColor || '#ffffff';
     clone.style.background = bgColor;
 
-    // Profile Image (Extra Large)
+    // --------------------------------
+    // PROFILE IMAGE (OPTIMIZED)
+    // --------------------------------
     const img = clone.querySelector('img');
     if (img) {
-      img.style.width = '180px';
-      img.style.height = '180px';
+      img.style.width = '150px'; // reduced from 180
+      img.style.height = '150px';
       img.style.borderRadius = '50%';
       img.style.objectFit = 'cover';
-      img.style.marginBottom = '16px';
     }
 
-    // Name styling
-    const name = clone.querySelector('h1');
-    if (name) {
-      name.style.fontSize = '32px';
-      name.style.margin = '8px 0';
-    }
+    await new Promise(r => setTimeout(r, 300));
 
-    // Contact Number Styling
-    const phone = clone.querySelector('.phone');
-    if (phone) {
-      phone.style.fontSize = '20px';
-      phone.style.marginTop = '10px';
-      phone.style.fontWeight = '500';
-    }
-
-    await new Promise(r => setTimeout(r, 400));
-
-    // Canvas capture
+    // --------------------------------
+    // CAPTURE (LOW SIZE, GOOD QUALITY)
+    // --------------------------------
     const canvas = await html2canvas(clone, {
-      scale: 4,
+      scale: 1.5, // 🔥 BIGGEST SIZE REDUCTION
       backgroundColor: bgColor,
       useCORS: true,
     });
 
-    const imgData = canvas.toDataURL('image/png');
+    // JPEG with compression
+    const imgData = canvas.toDataURL('image/jpeg', 0.65);
 
-    // Collect links
+    // --------------------------------
+    // LINK EXTRACTION
+    // --------------------------------
     const links = [];
     const rect = clone.getBoundingClientRect();
 
@@ -124,23 +117,27 @@ export const generatePDF = async (
 
     document.body.removeChild(container);
 
-    // Create PDF
+    // --------------------------------
+    // CREATE PDF (A4)
+    // --------------------------------
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
       format: 'a4',
+      compress: true, // 🔥 IMPORTANT
     });
 
-    pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
 
-    // Add links (phone included)
     links.forEach(l => {
       pdf.link(l.x * 210, l.y * 297, l.w * 210, l.h * 297, {
         url: l.url,
       });
     });
 
-    // Save / open
+    // --------------------------------
+    // SAVE / OPEN
+    // --------------------------------
     if (mobileWindow) {
       const blob = pdf.output('blob');
       mobileWindow.location.href = URL.createObjectURL(blob);
