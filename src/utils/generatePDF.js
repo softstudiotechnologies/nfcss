@@ -140,59 +140,49 @@ export const generatePDF = async (elementId, fileName = 'digital-card.pdf') => {
         document.body.removeChild(container);
 
         // -----------------------------------------------------------------------
-        // 4. GENERATE PDF (ATM Card Size: CR-80)
+        // 4. GENERATE PDF (A4 Size)
         // -----------------------------------------------------------------------
-        // CR-80 dimensions: 85.60 × 53.98 mm
-        // We use Portrait: 53.98mm width, 85.60mm height
-        const pdfWidth = 53.98;
-        const pdfHeight = 85.60;
+        // A4 Dimensions: 210mm x 297mm
+        const pdfWidth = 210;
+        const pdfHeight = 297;
 
-        // We want to FIT the captured image into this size.
-        // We will scale the image to fit strictly within width, and center vertically if short,
-        // or just stretch to fill if the aspect ratio is close.
-        // For a digital card reflow, stretching might distort. 
-        // We will "Fill Width" and let height flow, but cutoff or background fill?
-        // Actually, we captured exactly the content we wanted (removed banner).
-        // Let's rely on the capture.
-
-        // IMPORTANT: We force the PDF format to ATM size
         const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
-            format: [pdfWidth, pdfHeight],
+            format: 'a4',
         });
-
-        // Calculate image placement to preserve aspect ratio?
-        // Or just stretch? ATM card implies specific background filling.
-        // We will fill the width (53.98mm) and calculate proportional height.
-        // If it's less than 85.6, we leave white space or center.
-        // If it's more, we scale down?
-        // Ideally, the content flows to fill.
 
         const imgProps = pdf.getImageProperties(imgData);
         const imgRatio = imgProps.width / imgProps.height;
+        const pageRatio = pdfWidth / pdfHeight;
 
-        // Render Width is fixed:
-        const renderWidth = pdfWidth;
-        const renderHeight = renderWidth / imgRatio;
+        // Calculate dimensions to FIT within the page (contain)
+        let renderWidth, renderHeight;
 
-        // Center vertically if smaller than card height
-        let yOffset = 0;
-        if (renderHeight < pdfHeight) {
-            yOffset = (pdfHeight - renderHeight) / 2;
+        if (imgRatio > pageRatio) {
+            // Image is wider than page (relative to format) -> Fit Width
+            renderWidth = pdfWidth;
+            renderHeight = renderWidth / imgRatio;
+        } else {
+            // Image is taller than page -> Fit Height
+            renderHeight = pdfHeight;
+            renderWidth = renderHeight * imgRatio;
         }
 
-        // Add Image
-        pdf.addImage(imgData, type, 0, yOffset, renderWidth, renderHeight);
+        // Center the image on the page
+        const xOffset = (pdfWidth - renderWidth) / 2;
+        const yOffset = (pdfHeight - renderHeight) / 2;
 
-        // Add Links
+        // Add Image
+        pdf.addImage(imgData, type, xOffset, yOffset, renderWidth, renderHeight);
+
+        // Add Links mapped to the new scaled coordinates
         linkData.forEach(link => {
-            const x = link.xRatio * renderWidth;
+            const x = (link.xRatio * renderWidth) + xOffset;
             const y = (link.yRatio * renderHeight) + yOffset;
             const w = link.wRatio * renderWidth;
             const h = link.hRatio * renderHeight;
 
-            // Ensure values are valid finite numbers before adding link
             if (Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(w) && Number.isFinite(h)) {
                 try {
                     pdf.link(x, y, w, h, { url: link.url });
