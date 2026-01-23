@@ -29,15 +29,15 @@ export const config = {
 
     email: {
       enabled: true,
-      value: "alex@example.com",
+      value: "sales@printocards.com",
     },
     phone: {
       enabled: true,
-      value: "+91 9207806622",
+      value: "+91 9207806665",
     },
     website: {
       enabled: true,
-      value: "https://alexmorgan.design",
+      value: "https://www.printocards.com",
     }
   },
 
@@ -55,7 +55,7 @@ export const config = {
       icon: FaGoogle,
       url: "https://www.printocards.com",
       enabled: true,
-      color: "#0077B5"
+      color: "#444444ff"
     },
     {
       id: "instagram",
