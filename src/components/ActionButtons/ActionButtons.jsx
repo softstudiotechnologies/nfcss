@@ -59,6 +59,16 @@ const ActionButtons = () => {
         <div className={styles.container} data-pdf-ignore="true">
             {/* Row 1: Circular Action Icons */}
             <div className={styles.secondaryActions}>
+                {actions.saveContact.enabled && (
+                    <button
+                        className={styles.iconButton}
+                        onClick={handleSaveContact}
+                        aria-label="Save Contact"
+                    >
+                        <Download size={24} strokeWidth={1.5} />
+                    </button>
+                )}
+
                 {actions.phone.enabled && (
                     <button
                         className={styles.iconButton}
@@ -95,20 +105,12 @@ const ActionButtons = () => {
 
             {/* Row 2: Primary Actions */}
             <div className={styles.actionRow}>
-                {actions.saveContact.enabled && (
-                    <button
-                        className={styles.primaryButton}
-                        onClick={handleSaveContact}
-                    >
-                        <span>{actions.saveContact.label}</span>
-                    </button>
-                )}
-
                 <button
-                    className={styles.secondaryButton}
+                    className={styles.primaryButton}
                     onClick={handleDownloadImage}
                     title="Download Visiting Card"
                 >
+                    <FileDown size={20} />
                     <span>Save Visiting Card</span>
                 </button>
             </div>
