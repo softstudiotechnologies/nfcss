@@ -15,8 +15,8 @@ export const config = {
   theme: {
     primaryColor: "#ffffff",       // White buttons for maximum contrast
     // Dark Slate
-    surfaceColor: "#000000ff",       // Deep Midnight Blue
-    onSurface: "#f8fafc",          // Off-white text for readability
+    surfaceColor: "#ffffffff",       // Deep Midnight Blue
+    onSurface: "#ffffffff",          // Off-white text for readability
     onPrimary: "#ffffffff",          // Dark text on white buttons
     accentColor: "#38bdf8",        // Sky Blue accent
   },
