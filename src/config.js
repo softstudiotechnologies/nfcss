@@ -6,7 +6,7 @@ export const config = {
   profile: {
     name: "Printo Cards And Technologies",
     // role: "Software Developer",
-    image: "/logo.png", // Avatar
+    image: "/Logo.jpeg", // Avatar
     coverImage: "/Logo.jpeg", // Premium Cover
     // verified: true,
   },
