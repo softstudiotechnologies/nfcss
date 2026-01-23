@@ -7,7 +7,7 @@ export const config = {
     name: "Printo Cards And Technologies",
     // role: "Software Developer",
     image: "/Logo.jpeg", // Avatar
-    coverImage: "/Logo.jpeg", // Premium Cover
+    coverImage: "/bannerjpeg.jpeg", // Premium Cover
     // verified: true,
   },
 
@@ -33,7 +33,7 @@ export const config = {
     },
     phone: {
       enabled: true,
-      value: "+91 8086630149",
+      value: "+91 9207806622",
     },
     website: {
       enabled: true,
