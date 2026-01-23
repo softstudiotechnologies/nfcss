@@ -13,11 +13,10 @@ export const config = {
 
   // Theme Configuration
   theme: {
-    primaryColor: "#ffffff",       // White buttons for maximum contrast
-    // Dark Slate
-    surfaceColor: "#ffffffff",       // Deep Midnight Blue
-    onSurface: "#ffffffff",          // Off-white text for readability
-    onPrimary: "#ffffffff",          // Dark text on white buttons
+    primaryColor: "#ffffff",       // Solid White
+    surfaceColor: "#0f172a",       // Solid Dark Slate
+    onSurface: "#ffffff",          // White text
+    onPrimary: "#0f172a",          // Dark text on white buttons
     accentColor: "#38bdf8",        // Sky Blue accent
   },
 

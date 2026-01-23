@@ -49,8 +49,8 @@
     gap: 0.75rem;
     cursor: pointer;
 
-    /* Modern Gradient */
-    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+    /* Modern Solid */
+    background: #ffffff;
     color: #0f172a;
     border: 1px solid rgba(255, 255, 255, 0.5);
 
@@ -89,10 +89,9 @@
     gap: 0.5rem;
     cursor: pointer;
 
-    background: rgba(255, 255, 255, 0.1);
+    background: #1e293b;
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
 
     transition: all 0.2s ease;
 }
