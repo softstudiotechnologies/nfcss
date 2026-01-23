@@ -78,12 +78,6 @@ export const config = {
       enabled: true,
       color: "#000000"
     },
-    {
-      id: "Mobile",
-      icon: FaPhone,
-      url: "+91 8086630149",
-      enabled: true,
-      color: "#5865F2"
-    }
+    
   ]
 };
