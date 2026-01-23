@@ -1,5 +1,5 @@
 import { Share2, Instagram, Linkedin, Twitter, Globe, Mail, Phone, MessageCircle } from 'lucide-react';
-import { FaWhatsapp, FaTelegram, FaDiscord, FaMedium, FaFacebook, FaFacebookF, FaMobile, FaPhone } from 'react-icons/fa';
+import { FaWhatsapp, FaTelegram, FaDiscord, FaMedium, FaFacebook, FaFacebookF, FaMobile, FaPhone, FaInternetExplorer } from 'react-icons/fa';
 
 export const config = {
   // Brand & Profile Configuration
@@ -46,35 +46,35 @@ export const config = {
     {
       id: "whatsapp",
       icon: FaWhatsapp,
-      url: "https://wa.me/15551234567",
+      url: "https://wa.me/+919207806665",
       enabled: true,
       color: "#25D366"
     },
     {
       id: "linkedin",
-      icon: Linkedin,
-      url: "https://linkedin.com/in/alexmorgan",
+      icon: FaInternetExplorer,
+      url: "https://www.printocards.com",
       enabled: true,
       color: "#0077B5"
     },
     {
       id: "instagram",
       icon: Instagram,
-      url: "https://instagram.com/mhmdfavas",
+      url: "https://instagram.com/printocards",
       enabled: true,
       color: "#E1306C"
     },
-    {
-      id: "telegram",
-      icon: FaTelegram,
-      url: "https://t.me/alexmorgan",
-      enabled: true,
-      color: "#0088cc"
-    },
+    // {
+    //   id: "telegram",
+    //   icon: FaTelegram,
+    //   url: "https://t.me/alexmorgan",
+    //   enabled: true,
+    //   color: "#0088cc"
+    // },
     {
       id: "medium",
       icon: FaFacebook,
-      url: "https://medium.com/@alexmorgan",
+      url: "https://facebook.com/printocards",
       enabled: true,
       color: "#000000"
     },
