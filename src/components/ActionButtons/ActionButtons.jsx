@@ -1,7 +1,7 @@
 import { Phone, Mail, Link, Download, FileDown, UserPlus } from 'lucide-react';
 import { config } from '../../config';
 import styles from './ActionButtons.module.css';
-import visitingCardImage from '../../assets/BLG.jpg';
+import visitingCardImage from '../../public/PrintoCardsAndTechnologies.pdf';
 
 const ActionButtons = () => {
     const { actions } = config;
