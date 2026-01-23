@@ -1,10 +1,9 @@
 import { Phone, Mail, Link, Download, FileDown, UserPlus } from 'lucide-react';
 import { config } from '../../config';
 import styles from './ActionButtons.module.css';
-import visitingCardImage from '../../public/PrintoCardsAndTechnologies.pdf';
-
 const ActionButtons = () => {
     const { actions } = config;
+    const visitingCardPdf = '/PrintoCardsAndTechnologies.pdf';
 
     const handleSaveContact = () => {
         const { phone } = config.actions;
@@ -15,8 +14,8 @@ const ActionButtons = () => {
 
     const handleDownloadImage = () => {
         const link = document.createElement('a');
-        link.href = visitingCardImage;
-        link.setAttribute('download', `${config.profile.name.replace(/\s+/g, '_')}_Visiting_Card.jpg`);
+        link.href = visitingCardPdf;
+        link.setAttribute('download', `${config.profile.name.replace(/\s+/g, '_')}_Visiting_Card.pdf`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
