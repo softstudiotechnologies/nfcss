@@ -14,10 +14,10 @@ export const config = {
   // Theme Configuration
   theme: {
     primaryColor: "#ffffff",       // Solid White
-    surfaceColor: "#0f172a",       // Solid Dark Slate
+    surfaceColor: "#000000ff",       // Solid Dark Slate
     onSurface: "#ffffff",          // White text
-    onPrimary: "#0f172a",          // Dark text on white buttons
-    accentColor: "#38bdf8",        // Sky Blue accent
+    onPrimary: "#000000ff",          // Dark text on white buttons
+    accentColor: "#000000ff",        // Sky Blue accent
   },
 
   // Action Buttons (Top row)
