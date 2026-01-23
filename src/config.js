@@ -4,10 +4,10 @@ import { FaWhatsapp, FaTelegram, FaDiscord, FaMedium, FaFacebook, FaFacebookF, F
 export const config = {
   // Brand & Profile Configuration
   profile: {
-    name: "Muhammed Favas",
-    role: "Software Developer",
-    image: "/favas.JPG", // Avatar
-    coverImage: "BLG.JPG", // Premium Cover
+    name: "Printo Cards And Technologies",
+    // role: "Software Developer",
+    image: "/logo.png", // Avatar
+    coverImage: "Logo.JPG", // Premium Cover
     verified: true,
   },
 
