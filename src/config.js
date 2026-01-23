@@ -6,7 +6,7 @@ export const config = {
   profile: {
     name: "Printo Cards And Technologies",
     // role: "Software Developer",
-    image: "/Logo.jpeg", // Avatar
+    image: "/logobig.jpeg", // Avatar
     coverImage: "/banner.jpeg", // Premium Cover
     // verified: true,
   },
@@ -51,7 +51,7 @@ export const config = {
       color: "#25D366"
     },
     {
-      id: "linkedin",
+      id: "Website",
       icon: FaGoogle,
       url: "https://www.printocards.com",
       enabled: true,
