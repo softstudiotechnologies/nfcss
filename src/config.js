@@ -8,7 +8,7 @@ export const config = {
     // role: "Software Developer",
     image: "/logo.png", // Avatar
     coverImage: "Logo.JPG", // Premium Cover
-    verified: true,
+    // verified: true,
   },
 
   // Theme Configuration
@@ -17,7 +17,7 @@ export const config = {
     // Dark Slate
     surfaceColor: "#000000ff",       // Deep Midnight Blue
     onSurface: "#f8fafc",          // Off-white text for readability
-    onPrimary: "#0f172a",          // Dark text on white buttons
+    onPrimary: "#ffffffff",          // Dark text on white buttons
     accentColor: "#38bdf8",        // Sky Blue accent
   },
 
