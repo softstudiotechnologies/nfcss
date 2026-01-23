@@ -7,33 +7,10 @@ const ActionButtons = () => {
     const { actions } = config;
 
     const handleSaveContact = () => {
-        const { name, role } = config.profile;
-        const { phone, email, website } = config.actions;
-
-        // Construct vCard data
-        const vCardData = [
-            'BEGIN:VCARD',
-            'VERSION:3.0',
-            `FN:${name}`,
-            `TITLE:${role}`,
-            phone.enabled ? `TEL;TYPE=CELL:${phone.value}` : '',
-            email.enabled ? `EMAIL;TYPE=WORK:${email.value}` : '',
-            website.enabled ? `URL:${website.value}` : '',
-            'END:VCARD'
-        ].filter(Boolean).join('\n');
-
-        // Create blob and trigger download
-        const blob = new Blob([vCardData], { type: 'text/vcard' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${name.replace(/\s+/g, '_')}.vcf`);
-        document.body.appendChild(link);
-        link.click();
-
-        // Cleanup
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
+        const { phone } = config.actions;
+        if (phone.enabled && phone.value) {
+            window.location.href = `tel:${phone.value}`;
+        }
     };
 
     const handleDownloadImage = () => {
