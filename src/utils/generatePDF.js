@@ -87,8 +87,8 @@ export const generatePDF = async (
         // ------------------------------
         const img = clone.querySelector('img');
         if (img) {
-            img.style.width = '150px';
-            img.style.height = '150px';
+            img.style.width = '120px';
+            img.style.height = '120px';
             img.style.borderRadius = '50%';
             img.style.objectFit = 'cover';
             img.style.marginBottom = '14px';
