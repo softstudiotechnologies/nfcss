@@ -1,5 +1,5 @@
 import { Share2, Instagram, Linkedin, Twitter, Globe, Mail, Phone, MessageCircle } from 'lucide-react';
-import { FaWhatsapp, FaTelegram, FaDiscord, FaMedium, FaFacebook, FaFacebookF, FaMobile, FaPhone, FaInternetExplorer } from 'react-icons/fa';
+import { FaWhatsapp, FaTelegram, FaDiscord, FaMedium, FaFacebook, FaFacebookF, FaMobile, FaPhone, FaInternetExplorer, FaGoogle } from 'react-icons/fa';
 
 export const config = {
   // Brand & Profile Configuration
@@ -52,7 +52,7 @@ export const config = {
     },
     {
       id: "linkedin",
-      icon: FaInternetExplorer,
+      icon: FaGoogle,
       url: "https://www.printocards.com",
       enabled: true,
       color: "#0077B5"
@@ -71,13 +71,16 @@ export const config = {
     //   enabled: true,
     //   color: "#0088cc"
     // },
-    {
-      id: "medium",
-      icon: FaFacebook,
-      url: "https://facebook.com/printocards",
-      enabled: true,
-      color: "#000000"
-    },
+
+
+
+    // {
+    //   id: "medium",
+    //   icon: FaFacebook,
+    //   url: "https://facebook.com/printocards",
+    //   enabled: true,
+    //   color: "#004cffff"
+    // },
 
   ]
 };
