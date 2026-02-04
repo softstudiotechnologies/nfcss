@@ -3,21 +3,22 @@
     width: 100%;
     max-width: 480px;
     min-height: 100dvh;
-    background-color: var(--surface-color);
+    background: transparent;
+    /* Changed from var(--surface-color) */
     position: relative;
     overflow: hidden;
     box-shadow: none;
     display: flex;
     flex-direction: column;
     margin: 0 auto;
-    /* Ensure centering if needed */
 }
 
 /* Mobile-only styles */
 @media (max-width: 767px) {
     .coverImage {
         width: 100%;
-        height: 40%;
+        height: 45%;
+        /* Slightly taller for modern look */
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -25,6 +26,8 @@
         top: 0;
         left: 0;
         z-index: 0;
+        mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
     }
 
     .floatingCard {
@@ -33,13 +36,18 @@
         left: 0;
         width: 100%;
         height: 65%;
-        background-color: var(--surface-color);
-        /* Solid Background */
+
+        /* Glassmorphism */
+        background: rgba(10, 10, 10, 0.7);
+        /* Dark semi-transparent */
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
         border-top: 1px solid rgba(255, 255, 255, 0.1);
+
         border-top-left-radius: 32px;
         border-top-right-radius: 32px;
         z-index: 10;
-        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
         display: flex;
         flex-direction: column;
         animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -48,7 +56,8 @@
     .scrollableContent {
         flex: 1;
         overflow-y: auto;
-        padding: 2.5rem 1rem 2rem;
+        padding: 2.5rem 1.5rem 2rem;
+        /* Increased side padding */
         scrollbar-width: none;
     }
 }
@@ -80,13 +89,13 @@
 /* --------------------------------------------------------- */
 @media (min-width: 768px) {
     .wrapper {
-        background-color: var(--surface-color);
+        background: transparent;
+        /* Let body background show through */
     }
 
     .phoneFrame {
         width: 100%;
         max-width: none;
-        /* UNCAP WIDTH */
         height: auto;
         min-height: 100vh;
         border-radius: 0;
@@ -94,51 +103,53 @@
         background: transparent;
         display: flex;
         flex-direction: column;
-        /* Stack vertically */
         overflow: visible;
-        /* Allow scrolling */
     }
 
     /* Hero Banner */
     .coverImage {
         position: relative;
         width: 100%;
-        height: 350px;
-        /* Hero Height */
+        height: 400px;
+        /* Taller hero */
         background-size: cover;
         background-position: center;
         border-radius: 0;
         z-index: 0;
+        mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+        opacity: 0.8;
     }
 
     /* Centered Content Card */
     .floatingCard {
         position: relative;
         width: 90%;
-        /* Use percentage for flexibility */
-        max-width: 800px;
-        /* Cap width for readability */
+        max-width: 700px;
+        /* Slightly narrower for modern look */
         height: auto;
-        /* Hug content */
-        margin: -80px auto 4rem;
-        /* Negative top margin to overlap Hero */
+        margin: -120px auto 4rem;
+        /* More negative margin */
 
-        background-color: var(--surface-color);
-        /* Solid Background */
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 24px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        /* Glassmorphism */
+        background: var(--surface-glass);
+        backdrop-filter: blur(var(--surface-blur));
+        -webkit-backdrop-filter: blur(var(--surface-blur));
+        border: 1px solid var(--surface-glass-border);
+
+        border-radius: 32px;
+        /* More rounded */
+        box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.7);
 
         display: block;
-        /* Normal block */
         animation: none;
         z-index: 10;
+        overflow: hidden;
+        /* Contain children */
     }
 
     .scrollableContent {
         overflow: visible;
-        /* No internal scroll */
-        padding: 3rem 4rem;
-        /* Adequate padding */
+        padding: 4rem 5rem;
     }
 }

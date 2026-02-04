@@ -49,13 +49,13 @@
     gap: 0.75rem;
     cursor: pointer;
 
-    /* Modern Solid */
+    /* Modern Primary */
     background: #ffffff;
-    color: #0f172a;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: #000000;
+    border: none;
 
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: all 0.2s ease;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .primaryButton:hover {
@@ -89,11 +89,13 @@
     gap: 0.5rem;
     cursor: pointer;
 
-    background: #1e293b;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.2);
 
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 .secondaryButton:hover {

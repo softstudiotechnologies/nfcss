@@ -1,8 +1,12 @@
-import { Phone, Mail, Link, Download, FileDown, UserPlus } from 'lucide-react';
+import { useState } from 'react';
+import { Phone, Mail, Link, Download, FileDown, UserPlus, ScanLine } from 'lucide-react';
 import { config } from '../../config';
 import styles from './ActionButtons.module.css';
+import CameraModal from '../CameraModal/CameraModal';
+
 const ActionButtons = () => {
     const { actions } = config;
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
     const visitingCardPdf = '/PrintoCardsAndTechnologies.pdf';
 
     const handleSaveContact = () => {
@@ -22,11 +26,12 @@ const ActionButtons = () => {
     };
 
     const handleAction = (type, value) => {
-        if (!value) return;
+        if (!value && type !== 'camera') return;
         switch (type) {
             case 'email': window.location.href = `mailto:${value}`; break;
             case 'phone': window.location.href = `tel:${value}`; break;
             case 'website': window.open(value, '_blank', 'noopener,noreferrer'); break;
+            case 'camera': setIsCameraOpen(true); break;
             default: break;
         }
     };
@@ -67,6 +72,16 @@ const ActionButtons = () => {
                         <Link size={24} strokeWidth={1.5} />
                     </button>
                 )}
+
+                {actions.camera?.enabled && (
+                    <button
+                        className={styles.iconButton}
+                        onClick={() => handleAction('camera')}
+                        aria-label="Scan QR"
+                    >
+                        <ScanLine size={24} strokeWidth={1.5} />
+                    </button>
+                )}
             </div>
 
             {/* Row 2: Primary Actions (Stacked) */}
@@ -75,7 +90,6 @@ const ActionButtons = () => {
                     <button
                         className={styles.primaryButton}
                         onClick={handleSaveContact}
-                        style={{ background: '#ffffff', color: '#000000' }}
                     >
                         <UserPlus size={20} />
                         <span>{actions.saveContact.label}</span>
@@ -86,12 +100,17 @@ const ActionButtons = () => {
                     className={styles.secondaryButton}
                     onClick={handleDownloadImage}
                     title="Download Visiting Card"
-                    style={{ background: '#1e293b', color: '#ffffff', width: '100%' }}
+                    style={{ width: '100%' }}
                 >
                     <FileDown size={20} />
                     <span>Save Visiting Card</span>
                 </button>
             </div>
+
+            <CameraModal
+                isOpen={isCameraOpen}
+                onClose={() => setIsCameraOpen(false)}
+            />
         </div>
     );
 };

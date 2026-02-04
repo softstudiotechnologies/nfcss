@@ -14,10 +14,10 @@ export const config = {
   // Theme Configuration
   theme: {
     primaryColor: "#ffffff",       // Solid White
-    surfaceColor: "#000000ff",       // Solid Dark Slate
+    surfaceColor: "#050505",       // Dark Background
     onSurface: "#ffffff",          // White text
-    onPrimary: "#000000ff",          // Dark text on white buttons
-    accentColor: "#000000ff",        // Sky Blue accent
+    onPrimary: "#000000",          // Dark text on white buttons
+    accentColor: "#38bdf8",        // Sky Blue accent (Visible on dark)
   },
 
   // Action Buttons (Top row)
@@ -25,6 +25,12 @@ export const config = {
     saveContact: {
       enabled: true,
       label: "Save Contact"
+    },
+
+    // New Camera Feature
+    camera: {
+      enabled: true,
+      label: "Scan"
     },
 
     email: {
