@@ -32,22 +32,15 @@ textarea {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  justify-content: center;
   min-height: 100vh;
   min-width: 320px;
-  background-color: #0f172a;
-  color: #f8fafc;
+  background-color: var(--surface-color, #ffffff);
+  color: #000000;
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {
   width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
   min-height: 100vh;
-  position: relative;
-  background-color: transparent;
-  /* Container handles bg */
-  box-shadow: none;
+  isolation: isolate;
 }
