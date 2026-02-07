@@ -47,7 +47,7 @@ const ActionButtons = () => {
                         data-pdf-url={`tel:${actions.phone.value}`}
                         aria-label="Call"
                     >
-                        <Phone size={24} strokeWidth={1.5} />
+                        {actions.phone.icon ? <actions.phone.icon size={26} strokeWidth={2} /> : <Phone size={26} strokeWidth={2} />}
                     </button>
                 )}
 
@@ -58,7 +58,7 @@ const ActionButtons = () => {
                         data-pdf-url={`mailto:${actions.email.value}`}
                         aria-label="Email"
                     >
-                        <Mail size={24} strokeWidth={1.5} />
+                        {actions.email.icon ? <actions.email.icon size={26} strokeWidth={2} /> : <Mail size={26} strokeWidth={2} />}
                     </button>
                 )}
 
@@ -69,7 +69,7 @@ const ActionButtons = () => {
                         data-pdf-url={actions.website.value}
                         aria-label="Website"
                     >
-                        <Link size={24} strokeWidth={1.5} />
+                        {actions.website.icon ? <actions.website.icon size={26} strokeWidth={2} /> : <Link size={26} strokeWidth={2} />}
                     </button>
                 )}
 
@@ -79,7 +79,7 @@ const ActionButtons = () => {
                         onClick={() => handleAction('camera')}
                         aria-label="Scan QR"
                     >
-                        <ScanLine size={24} strokeWidth={1.5} />
+                        {actions.camera.icon ? <actions.camera.icon size={26} strokeWidth={2} /> : <ScanLine size={26} strokeWidth={2} />}
                     </button>
                 )}
             </div>
@@ -91,7 +91,7 @@ const ActionButtons = () => {
                         className={styles.primaryButton}
                         onClick={handleSaveContact}
                     >
-                        <UserPlus size={20} />
+                        {actions.saveContact.icon ? <actions.saveContact.icon size={22} strokeWidth={2.5} /> : <UserPlus size={22} strokeWidth={2.5} />}
                         <span>{actions.saveContact.label}</span>
                     </button>
                 )}
@@ -102,10 +102,11 @@ const ActionButtons = () => {
                     title="Download Visiting Card"
                     style={{ width: '100%' }}
                 >
-                    <FileDown size={20} />
+                    <Download size={20} strokeWidth={2} />
                     <span>Save Visiting Card</span>
                 </button>
             </div>
+
 
             <CameraModal
                 isOpen={isCameraOpen}

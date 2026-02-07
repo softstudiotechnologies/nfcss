@@ -15,12 +15,15 @@ const SocialIcon = ({ Icon, url, color, id }) => {
                 onClick={handleClick}
                 aria-label={`Visit ${id}`}
             >
-                <Icon size={28} style={{ color: color || 'white' }} />
+                <div className={styles.iconContainer}>
+                    <Icon size={32} style={{ color: color || 'white' }} />
+                </div>
                 <div className={styles.glow} style={{ backgroundColor: color }} />
             </button>
             <span className={styles.label}>{label}</span>
         </div>
     );
+
 };
 
 
