@@ -2,9 +2,9 @@ import DigitalCardContainer from './components/DigitalCardContainer/DigitalCardC
 import ProfileHeader from './components/ProfileHeader/ProfileHeader';
 import ActionButtons from './components/ActionButtons/ActionButtons';
 import SocialGrid from './components/SocialGrid/SocialGrid';
-import About from './components/About/About';
-import Skills from './components/Skills/Skills';
-import Projects from './components/Projects/Projects';
+// import About from './components/About/About';
+// import Skills from './components/Skills/Skills';
+// import Projects from './components/Projects/Projects';
 
 import logo from './assets/logopngsmall.png';
 
@@ -13,9 +13,9 @@ function App() {
         <DigitalCardContainer>
             <ProfileHeader />
             <ActionButtons />
-            <About />
-            <Skills />
-            <Projects />
+            {/* <About /> */}
+            {/* <Skills /> */}
+            {/* <Projects /> */}
             <SocialGrid />
 
             {/* Modern Footer */}

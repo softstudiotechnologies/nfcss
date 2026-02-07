@@ -10,8 +10,8 @@ import {
 export const config = {
   // Brand & Profile Configuration
   profile: {
-    name: "Printo Cards",
-    role: "Digital Identity Solutions",
+    name: "Printo Cards And Technologies",
+    role: "Leading PVC Card Manufacturer In Kerala",
     bio: "We specialize in cutting-edge NFC technology and digital identity platforms. Our goal is to revolutionize how professionals connect and share information in a paperless world.",
     image: "/logobig.jpeg",
     coverImage: "/banner.jpeg",
@@ -28,14 +28,14 @@ export const config = {
   },
 
   // Services / Expertise
-  skills: [
-    { name: "NFC Technology", level: 98 },
-    { name: "Digital Identity", level: 95 },
-    { name: "Brand Integration", level: 90 },
-    { name: "UI/UX Design", level: 85 },
-    { name: "Mobile Solutions", level: 88 },
-    { name: "Cloud Management", level: 82 },
-  ],
+  // skills: [
+  //   { name: "NFC Technology", level: 98 },
+  //   { name: "Digital Identity", level: 95 },
+  //   { name: "Brand Integration", level: 90 },
+  //   { name: "UI/UX Design", level: 85 },
+  //   { name: "Mobile Solutions", level: 88 },
+  //   { name: "Cloud Management", level: 82 },
+  // ],
 
   // Featured Solutions
   projects: [
