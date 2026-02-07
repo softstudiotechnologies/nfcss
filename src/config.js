@@ -54,7 +54,7 @@ const client_printo = {
   ],
   actions: {
     saveContact: { enabled: true, label: "Save Contact", icon: UserPlus },
-    camera: { enabled: true, label: "Scan Card", icon: ScanLine },
+    camera: { enabled: false, label: "Scan Card", icon: ScanLine },
     email: { enabled: true, value: "sales@printocards.com", icon: Mail },
     phone: { enabled: true, value: "+91 9207806665", icon: Phone },
     website: { enabled: true, value: "https://www.printocards.com", icon: Globe }
