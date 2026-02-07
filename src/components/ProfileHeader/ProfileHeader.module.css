@@ -3,52 +3,54 @@
     flex-direction: column;
     align-items: center;
     padding: 0 0 2rem;
-    /* Reduced top padding as it's top of card now */
     position: relative;
     text-align: center;
 }
 
 .avatarContainer {
-    margin-bottom: 1rem;
+    margin-top: -6rem;
+    /* Overlap with cover image */
+    margin-bottom: 1.5rem;
     display: flex;
     justify-content: center;
     width: 100%;
 }
 
 .avatar {
-    width: 90px;
-    height: 90px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-    transition: transform 0.3s ease;
+    border: 4px solid #0a0a0b;
+    /* Match surface color */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .avatar:hover {
-    transform: scale(1.05);
+    transform: scale(1.08) rotate(5deg);
 }
 
 .info {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
 }
 
 .nameRow {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.75rem;
     justify-content: center;
 }
 
 .name {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-size: 2.25rem;
+    font-weight: 800;
     color: #ffffff;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
 }
 
 .verified {
@@ -56,7 +58,9 @@
 }
 
 .role {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.7);
-    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
 }

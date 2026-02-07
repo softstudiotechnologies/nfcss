@@ -13,15 +13,15 @@ const SocialIcon = ({ Icon, url, color, id }) => {
             <button
                 className={styles.socialCard}
                 onClick={handleClick}
-                style={{ backgroundColor: color }} // Use branded color for background
                 aria-label={`Visit ${id}`}
-                data-pdf-url={url}
             >
-                <Icon size={28} color="white" />
+                <Icon size={28} style={{ color: color || 'white' }} />
+                <div className={styles.glow} style={{ backgroundColor: color }} />
             </button>
             <span className={styles.label}>{label}</span>
         </div>
     );
 };
+
 
 export default SocialIcon;
