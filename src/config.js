@@ -26,7 +26,7 @@ const client_printo = {
     verified: true,
   },
   theme: {
-    primaryColor: "#38bdf8",
+    primaryColor: "#f87238e2",
     surfaceColor: "#0a0a0b",
     onSurface: "#ffffff",
     onPrimary: "#ffffff",
