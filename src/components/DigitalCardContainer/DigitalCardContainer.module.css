@@ -34,7 +34,7 @@
         min-height: 75vh;
 
         /* Minimal Glass */
-        background: rgba(10, 10, 11, 0.85);
+        background: var(--bg-color);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -126,7 +126,7 @@
         margin: 10vh auto 4rem;
 
         /* Premium Glassmorphism */
-        background: rgba(10, 10, 11, 0.7);
+        background: var(--bg-color);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.08);

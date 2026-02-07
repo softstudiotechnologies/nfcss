@@ -33,7 +33,7 @@ function App() {
                 gap: '1rem'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span>© {new Date().getFullYear()} Alex Morgan. All rights reserved.</span>
+                    <span>© {new Date().getFullYear()} Printo Cards. All rights reserved.</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
                     <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Developed By</p>

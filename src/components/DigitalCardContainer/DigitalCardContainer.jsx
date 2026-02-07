@@ -11,6 +11,7 @@ const DigitalCardContainer = ({ children }) => {
                     '--primary-color': config.theme.primaryColor,
                     '--surface-color': config.theme.surfaceColor,
                     '--on-surface': config.theme.onSurface,
+                    '--bg-color': config.theme.surfaceColor || '#0a0a0b',
                 }}
             >
                 {/* Cover Image Area */}
