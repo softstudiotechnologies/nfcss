@@ -27,10 +27,10 @@ const client_printo = {
   },
   theme: {
     primaryColor: "#f87238e2",
-    surfaceColor: "#0a0a0b",
+    surfaceColor: "#000000ff",
     onSurface: "#ffffff",
     onPrimary: "#ffffff",
-    accentColor: "#0ea5e9",
+    accentColor: "#f87238e2",
   },
   skills: [
     { name: "NFC Technology", level: 98 },
